@@ -1,0 +1,79 @@
+-- Creación de la base de datos
+CREATE DATABASE BD_ListQR;
+USE BD_ListQR;
+
+-- Tabla de Alumnos (Sin modificaciones)
+CREATE TABLE alumnos (
+    matriculaAlum VARCHAR(10) PRIMARY KEY,  -- Clave primaria única
+    nombre VARCHAR(100),       -- Nombre obligatorio
+    apellidoPa VARCHAR(50),    -- Apellido paterno obligatorio
+    apellidoMa VARCHAR(50),    -- Apellido materno obligatorio
+    grado VARCHAR(10),         -- Grado obligatorio
+    grupo VARCHAR(10),         -- Grupo obligatorio
+    password VARCHAR(255)      -- Contraseña obligatoria
+);
+
+-- Tabla de Profesores (Sin modificaciones)
+CREATE TABLE profesor (
+    matricula VARCHAR(10) PRIMARY KEY,  -- Clave primaria única
+    nombre VARCHAR(100),       -- Nombre obligatorio
+    apellidoPa VARCHAR(50),    -- Apellido paterno obligatorio
+    apellidoMa VARCHAR(50),    -- Apellido materno obligatorio
+    password VARCHAR(255)      -- Contraseña obligatoria
+);
+
+-- Tabla de Días de la Semana
+CREATE TABLE diasSemana (
+    idDiaSemana INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(20) NOT NULL UNIQUE -- Ejemplo: 'Lunes', 'Martes', etc.
+);
+
+-- Tabla de Clases
+CREATE TABLE clases (
+    idClase INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    grado VARCHAR(10) NOT NULL,
+    grupo VARCHAR(10) NOT NULL,
+    matriculaProfe VARCHAR(10) NOT NULL,
+    CONSTRAINT fk_matriculaProfe FOREIGN KEY (matriculaProfe) REFERENCES profesor(matricula)
+);
+
+-- Tabla de Horarios
+CREATE TABLE horario (
+    idHorario INT PRIMARY KEY AUTO_INCREMENT,
+    horaInit TIME NOT NULL,
+    horaFin TIME NOT NULL,
+    salon VARCHAR(50) NOT NULL,
+    idDiaSemana INT NOT NULL,
+    idClase INT NOT NULL,
+    CONSTRAINT fk_idDiaSemana FOREIGN KEY (idDiaSemana) REFERENCES diasSemana(idDiaSemana),
+    CONSTRAINT fk_idClase FOREIGN KEY (idClase) REFERENCES clases(idClase)
+);
+
+-- Tabla de Lista (Asistencia)
+CREATE TABLE lista (
+    codigo VARCHAR(50) PRIMARY KEY,
+    dia DATE NOT NULL,
+    idHorario INT NOT NULL,
+    CONSTRAINT fk_idHorario FOREIGN KEY (idHorario) REFERENCES horario(idHorario)
+);
+
+-- Tabla de Lista de Alumnos Asistidos
+CREATE TABLE listaAlums (
+    codigo VARCHAR(50),
+    matriculaAlum VARCHAR(10),
+    hora TIMESTAMP NOT NULL,
+    PRIMARY KEY (codigo, matriculaAlum),
+    CONSTRAINT fk_codigoLista FOREIGN KEY (codigo) REFERENCES lista(codigo),
+    CONSTRAINT fk_matriculaAlumno FOREIGN KEY (matriculaAlum) REFERENCES alumnos(matriculaAlum)
+);
+
+-- Tabla de Registros de Asistencia
+CREATE TABLE registroAsistencia (
+    idRegistro INT PRIMARY KEY AUTO_INCREMENT,
+    codigoLista VARCHAR(50) NOT NULL,
+    matriculaAlum VARCHAR(10) NOT NULL,
+    hora TIMESTAMP NOT NULL,
+    CONSTRAINT fk_codigoListaReg FOREIGN KEY (codigoLista) REFERENCES lista(codigo),
+    CONSTRAINT fk_matriculaAlumnoReg FOREIGN KEY (matriculaAlum) REFERENCES alumnos(matriculaAlum)
+);
