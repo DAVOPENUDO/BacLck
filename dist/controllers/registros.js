@@ -32,7 +32,7 @@ const postProfesor = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.postProfesor = postProfesor;
 const postAlumno = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { matricula, nombre, apellidoPa, apellidoMa, grado, grupo, password } = req.body;
-    conect_1.default.query("INSERT INTO alumnos VALUES (?,?,?,?,?,?,?);", [matricula.trim(), nombre.trim(), apellidoPa.trim(), apellidoMa.trim(), grado, grupo.trim(), password.trim()], (err, result) => {
+    conect_1.default.query("INSERT INTO alumnos VALUES (?,?,?,?,?,?,?);", [matricula.trim(), nombre.trim(), apellidoPa.trim(), apellidoMa.trim(), 1, grupo.trim(), password.trim()], (err, result) => {
         if (err) {
             res.json({ msj: 'Error al registrar al usuario', "status": false });
         }
